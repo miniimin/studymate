@@ -1,6 +1,6 @@
 package com.example.studymate.Study.service;
 
-import com.example.studymate.Study.dto.MakeStudyRequest;
+import com.example.studymate.Study.dto.AddStudyRequest;
 import com.example.studymate.Study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class StudyService {
     @Autowired
     final StudyRepository studyRepository;
 
-    public String makeStudy(MakeStudyRequest request) {
+    public String createStudy(AddStudyRequest request) {
         studyRepository.save(request.toEntity());
         return "SSuccess";
     }
