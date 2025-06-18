@@ -1,15 +1,14 @@
 package com.example.studymate.Study.dto;
 
 import com.example.studymate.Study.entity.StudyGroup;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class MakeStudyRequest {
 
-    private String title;
-    private String description;
+    public String title;
+    public String description;
 
     public StudyGroup toEntity() {
         return StudyGroup.builder()

@@ -1,19 +1,19 @@
 package com.example.studymate.Study.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.web.ErrorResponse;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Builder
 public class StudyGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "study_group_id", updatable = false)
     private Long id;
     private String title; // 스터디 제목
     private String description; // 스터디 설명
@@ -24,5 +24,17 @@ public class StudyGroup {
     private LocalDateTime recruitDeadline; // 스터디 모집 종료일
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Builder
+    public StudyGroup(String title,
+                      String description,
+                      Long CreatorId,
+                      LocalDateTime startDate,
+                      LocalDateTime endDate,
+                      Integer participantsMax,
+                      LocalDateTime recruitDeadline) {
+        this.title = title;
+        this.description = description;
+    }
 
 }
