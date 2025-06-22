@@ -2,7 +2,7 @@ package com.example.studymate.Study.controller;
 import com.example.studymate.Study.dto.AddStudyRequest;
 import com.example.studymate.Study.dto.AddStudyResponse;
 import com.example.studymate.Study.dto.StudyDetailResponse;
-import com.example.studymate.Study.service.StudyService;
+import com.example.studymate.Study.service.StudyGroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class StudyController {
+public class StudyGroupController {
 
-    private final StudyService studyService;
+    private final StudyGroupService studyService;
 
     @PostMapping("/study")
     public ResponseEntity<AddStudyResponse> createStudy(

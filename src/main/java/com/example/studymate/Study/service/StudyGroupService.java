@@ -4,16 +4,15 @@ import com.example.studymate.Study.dto.AddStudyRequest;
 import com.example.studymate.Study.dto.AddStudyResponse;
 import com.example.studymate.Study.dto.StudyDetailResponse;
 import com.example.studymate.Study.entity.StudyGroup;
-import com.example.studymate.Study.repository.StudyRepository;
+import com.example.studymate.Study.repository.StudyGroupRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StudyService {
+public class StudyGroupService {
 
-    private final StudyRepository studyRepository;
+    private final StudyGroupRepository studyRepository;
 
     public AddStudyResponse createStudy(AddStudyRequest request) {
         Long id = studyRepository.save(request.toEntity()).getId();
