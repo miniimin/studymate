@@ -2,7 +2,7 @@ package com.example.studymate.Study.controller;
 import com.example.studymate.Study.dto.AddStudyRequest;
 import com.example.studymate.Study.dto.AddStudyResponse;
 import com.example.studymate.Study.dto.StudyDetailResponse;
-import com.example.studymate.Study.service.StudyGroupService;
+import com.example.studymate.Study.service.GroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class StudyGroupController {
+public class GroupController {
 
-    private final StudyGroupService studyService;
+    private final GroupService studyService;
 
     @PostMapping("/study")
     public ResponseEntity<AddStudyResponse> createStudy(
@@ -25,5 +25,6 @@ public class StudyGroupController {
     public ResponseEntity<StudyDetailResponse> getStudyDetail(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(studyService.getStudyDetail(id));
     }
+
 
 }

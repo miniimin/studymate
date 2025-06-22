@@ -1,13 +1,13 @@
 package com.example.studymate.Study.service;
 
-import com.example.studymate.Study.repository.StudyCommentRepository;
+import com.example.studymate.Study.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StudyCommentService {
+public class RecordService {
 
-    private final StudyCommentRepository studyCommentRepository;
+    private final RecordRepository studyRecordRepository;
 
 }
