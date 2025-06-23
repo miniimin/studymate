@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ParticipantRepository extends JpaRepository<StudyParticipant, Long> {
-    boolean existByStudyGroupIdAndUserId(Long studyGroupId, Long userId);
+    boolean existsByStudyGroupIdAndUserId(Long studyGroupId, Long userId);
     List<StudyParticipant> findByUserId(Long userId);
 }

@@ -22,7 +22,7 @@ public class ParticipantService {
     private final GroupRepository groupRepository;
 
     public JoinStudyResponse joinStudy(JoinStudyRequest request) {
-        if (participantRepository.existByStudyGroupIdAndUserId(request.getStudyGroupId(), request.getUserId())) {
+        if (participantRepository.existsByStudyGroupIdAndUserId(request.getStudyGroupId(), request.getUserId())) {
             throw new IllegalArgumentException("이미 참여 중인 사용자입니다.");
         }
         StudyParticipant member = StudyParticipant.createMember(request.getStudyGroupId(), request.getUserId());

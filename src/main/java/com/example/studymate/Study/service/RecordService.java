@@ -22,7 +22,7 @@ public class RecordService {
     public AddRecordResponse createRecord(Long studyId,
                                           AddRecordRequest request) {
         Long userId = 1L;
-        if (!participantRepository.existByStudyGroupIdAndUserId(studyId, userId)) {
+        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }
         StudyRecord record = recordRepository.save(request.toEntity());
@@ -33,7 +33,7 @@ public class RecordService {
                                             Long recordId,
                                             AddCommentRequest request) {
         Long userId = 1L;
-        if (!participantRepository.existByStudyGroupIdAndUserId(studyId, userId)) {
+        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }
         if (!recordRepository.existsById(recordId)){
@@ -46,7 +46,7 @@ public class RecordService {
     public RecordCommentResponse viewRecordAndComment(Long studyId,
                                                       Long recordId) {
         Long userId = 1L;
-        if (!participantRepository.existByStudyGroupIdAndUserId(studyId, userId)) {
+        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }
         StudyRecord record = recordRepository.findById(recordId).orElseThrow(

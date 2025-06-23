@@ -34,7 +34,7 @@ public class GroupService {
                 () -> new IllegalArgumentException("해당 스터디가 존재하지 않습니다.")
         );
 
-        Boolean isParticipant = participantRepository.existByStudyGroupIdAndUserId(studyId, userId);
+        Boolean isParticipant = participantRepository.existsByStudyGroupIdAndUserId(studyId, userId);
 
         List<RecordListResponse> recordList =
                 recordRepository.findByStudyGroupId(studyId)
