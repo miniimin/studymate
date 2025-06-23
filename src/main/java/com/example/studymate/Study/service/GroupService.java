@@ -1,13 +1,11 @@
 package com.example.studymate.Study.service;
 
-import com.example.studymate.Study.dto.AddStudyRequest;
-import com.example.studymate.Study.dto.AddStudyResponse;
-import com.example.studymate.Study.dto.RecruitingStudyListResponse;
-import com.example.studymate.Study.dto.StudyDetailResponse;
+import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.entity.StudyGroup;
 import com.example.studymate.Study.entity.StudyParticipant;
 import com.example.studymate.Study.repository.GroupRepository;
 import com.example.studymate.Study.repository.ParticipantRepository;
+import com.example.studymate.Study.repository.RecordRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final ParticipantRepository participantRepository;
+    private final RecordRepository recordRepository;
 
     @Transactional
     public AddStudyResponse createStudy(AddStudyRequest request) {
@@ -34,13 +33,28 @@ public class GroupService {
         StudyGroup study = groupRepository.findById(studyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 스터디가 존재하지 않습니다.")
         );
-        return new StudyDetailResponse(study);
+
+        Boolean isParticipant = participantRepository.existByStudyGroupIdAndUserId(studyId, userId);
+
+        List<RecordListResponse> recordList =
+                recordRepository.findByStudyGroupId(studyId)
+                        .stream()
+                        .map(RecordListResponse::new)
+                        .toList();
+    return new StudyDetailResponse(study, isParticipant, recordList);
     }
 
-    public List<RecruitingStudyListResponse> getRecruitingStudyList() {
+    public List<StudySummary> getRecruitingStudyList() {
         return groupRepository.findByRecruitDeadlineAfter(LocalDateTime.now())
                 .stream()
-                .map(RecruitingStudyListResponse::new)
+                .map(StudySummary::new)
+                .toList();
+    }
+
+    public List<StudySummary> getRecruitingSearchList(String query) {
+        return groupRepository.searchRecruitingStudy(LocalDateTime.now(), query)
+                .stream()
+                .map(StudySummary::new)
                 .toList();
     }
 }

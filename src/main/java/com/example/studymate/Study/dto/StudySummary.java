@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class RecruitingStudyListResponse {
+public class StudySummary {
     private String title;
     private String description;
     private String creatorName;
@@ -14,7 +14,7 @@ public class RecruitingStudyListResponse {
     private LocalDateTime endDate;
     private Integer participantsMax;
 
-    public RecruitingStudyListResponse(StudyGroup studyGroup) {
+    public StudySummary(StudyGroup studyGroup) {
         this.title = studyGroup.getTitle();
         this.description = studyGroup.getDescription();
         this.creatorName = studyGroup.getCreatorName();

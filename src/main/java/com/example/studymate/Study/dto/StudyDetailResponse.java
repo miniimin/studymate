@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@Setter
 public class StudyDetailResponse {
 
     public String title;
@@ -20,7 +20,10 @@ public class StudyDetailResponse {
     public Integer participantsMax; // 스터디 최대 참여 가능 인원
     public LocalDateTime recruitDeadline; // 스터디 모집 종료일
 
-    public StudyDetailResponse(StudyGroup study) {
+    public Boolean isParticipant;
+    public List<RecordListResponse> recordList;
+
+    public StudyDetailResponse(StudyGroup study, Boolean isParticipant, List<RecordListResponse> recordList) {
         this.title = study.getTitle();
         this.description = study.getDescription();
         this.creatorId = study.getCreatorId();
@@ -29,5 +32,8 @@ public class StudyDetailResponse {
         this.endDate = study.getEndDate();
         this.participantsMax = study.getParticipantsMax();
         this.recruitDeadline = study.getRecruitDeadline();
+
+        this.isParticipant = isParticipant;
+        this.recordList = recordList;
     }
 }
