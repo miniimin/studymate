@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RecordController {
 
-    private final RecordService studyRecordService;
+    private final RecordService recordService;
 }

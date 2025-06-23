@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 public class AddStudyRequest {
 
     @NotBlank(message = "스터디 제목은 필수입니다.") @Size(max = 30, message = "제목은 30자 이내여야 합니다.")
-    public String title;
+    private String title;
 
     @NotBlank(message = "스터디 제목은 필수입니다.") @Size(max = 30, message = "제목은 30자 이내여야 합니다.")
-    public String description;
+    private String description;
 
     private Long creatorId; // 스터디 생성자
 

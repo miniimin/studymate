@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecordService {
 
-    private final RecordRepository studyRecordRepository;
+    private final RecordRepository recordRepository;
 
 }
