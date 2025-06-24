@@ -6,6 +6,7 @@ import com.example.studymate.Study.entity.StudyRecord;
 import com.example.studymate.Study.repository.CommentRepository;
 import com.example.studymate.Study.repository.ParticipantRepository;
 import com.example.studymate.Study.repository.RecordRepository;
+import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,9 @@ public class RecordService {
     private final CommentRepository commentRepository;
 
     public AddRecordResponse createRecord(Long studyId,
-                                          AddRecordRequest request) {
-        Long userId = 1L;
+                                          AddRecordRequest request,
+                                          User user) {
+        Long userId = user.getId();
         if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }
@@ -31,8 +33,9 @@ public class RecordService {
 
     public AddCommentResponse createComment(Long studyId,
                                             Long recordId,
-                                            AddCommentRequest request) {
-        Long userId = 1L;
+                                            AddCommentRequest request,
+                                            User user) {
+        Long userId = user.getId();
         if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }
@@ -44,8 +47,9 @@ public class RecordService {
     }
 
     public RecordCommentResponse viewRecordAndComment(Long studyId,
-                                                      Long recordId) {
-        Long userId = 1L;
+                                                      Long recordId,
+                                                      User user) {
+        Long userId = user.getId();
         if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
         }

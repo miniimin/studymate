@@ -8,6 +8,7 @@ import com.example.studymate.Study.entity.StudyGroup;
 import com.example.studymate.Study.entity.StudyParticipant;
 import com.example.studymate.Study.repository.GroupRepository;
 import com.example.studymate.Study.repository.ParticipantRepository;
+import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,8 @@ public class ParticipantService {
         return new JoinStudyResponse();
     }
 
-    public MyStudyResponse getMyStudyList() {
-        Long userId = 1L;
+    public MyStudyResponse getMyStudyList(User user) {
+        Long userId = user.getId();
 
         List<Long> participantIds = participantRepository.findByUserId(userId)
                 .stream()

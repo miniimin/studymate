@@ -5,9 +5,11 @@ import com.example.studymate.Study.dto.JoinStudyRequest;
 import com.example.studymate.Study.dto.JoinStudyResponse;
 import com.example.studymate.Study.dto.MyStudyResponse;
 import com.example.studymate.Study.service.ParticipantService;
+import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,8 +27,8 @@ public class ParticipantController {
 
     // 참여중 및 참여완료 스터디 리스트 조회 기능
     @GetMapping("/api/my-study")
-    public ResponseEntity<MyStudyResponse> getMyStudyList() {
-        return ResponseEntity.status(HttpStatus.OK).body(participantService.getMyStudyList());
+    public ResponseEntity<MyStudyResponse> getMyStudyList(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(participantService.getMyStudyList(user));
     }
 
 }
