@@ -9,11 +9,11 @@ public class AddUserRequest {
     private String nickname;
     private String password;
 
-    public User toEntity() {
-        return User.builder()
-                .email(email)
-                .nickname(nickname)
-                .password(password)
-                .build();
-    }
+//    public User toEntity() {
+//        return User.builder()
+//                .email(email)
+//                .nickname(nickname)
+//                .password(password)
+//                .build();
+//    }
 }
