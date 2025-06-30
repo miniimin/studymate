@@ -34,26 +34,38 @@ public class ParticipantService {
     public MyStudyResponse getMyStudyList(User user) {
         Long userId = user.getId();
 
-        List<Long> participantIds = participantRepository.findByUserId(userId)
+        List<StudySummary> onGoing = participantRepository.findMyStudyOngoing(userId)
                 .stream()
-                .map(StudyParticipant::getStudyGroupId)
-                .toList();
-
-        List<StudyGroup> myStudies = groupRepository.findAllById(participantIds);
-
-        LocalDateTime now = LocalDateTime.now();
-
-        List<StudySummary> onGoingStudies = myStudies
-                .stream()
-                .filter(study -> study.getEndDate().isAfter(now))
                 .map(StudySummary::new)
                 .toList();
-        List<StudySummary> completedStudies = myStudies
+        List<StudySummary> completed = participantRepository.findMyStudyCompleted(userId)
                 .stream()
-                .filter(study -> study.getEndDate().isBefore(now))
                 .map(StudySummary::new)
                 .toList();
 
-        return new MyStudyResponse(onGoingStudies, completedStudies);
+        return new MyStudyResponse(onGoing, completed);
     }
+
+    public MyStudyResponse getMyStudyOngoingList(User user) {
+        Long userId = user.getId();
+
+        List<StudySummary> onGoing = participantRepository.findMyStudyOngoing(userId)
+                .stream()
+                .map(StudySummary::new)
+                .toList();
+
+        return new MyStudyResponse(onGoing, null);
+    }
+
+    public MyStudyResponse getMyStudyCompletedList(User user) {
+        Long userId = user.getId();
+
+        List<StudySummary> completed = participantRepository.findMyStudyCompleted(userId)
+                .stream()
+                .map(StudySummary::new)
+                .toList();
+
+        return new MyStudyResponse(null, completed);
+    }
+
 }

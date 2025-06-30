@@ -3,12 +3,14 @@ package com.example.studymate.Study.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.web.ErrorResponse;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class StudyGroup {
 
     @Id
@@ -24,6 +26,7 @@ public class StudyGroup {
     private LocalDateTime recruitDeadline; // 스터디 모집 종료일
     @CreatedDate
     private LocalDateTime createdAt;
+    private String studyStatus; // 스터디 시작전 / 진행중 / 종료 상태 확인
 
     protected StudyGroup() {
 
