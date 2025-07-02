@@ -16,7 +16,7 @@ public class RecordController {
     private final RecordService recordService;
 
     // 기록 남기기 기능(스터디 진행 중일 때만 가능)
-    @PostMapping("/api/study/{studyId}/record")
+    @PostMapping("/api/studies/{studyId}/records")
     public ResponseEntity<AddRecordResponse> createRecord(@PathVariable Long studyId,
                                                           @RequestBody AddRecordRequest request,
                                                           @AuthenticationPrincipal User user) {
@@ -25,7 +25,7 @@ public class RecordController {
     }
 
     // 기록 덧글 달기 기능
-    @PostMapping("/api/study/{studyId}/record/{recordId}/comment")
+    @PostMapping("/api/studies/{studyId}/records/{recordId}/comments")
     public ResponseEntity<AddCommentResponse> createComment(@PathVariable Long studyId,
                                                             @PathVariable Long recordId,
                                                             @RequestBody AddCommentRequest request,
@@ -35,7 +35,7 @@ public class RecordController {
     }
 
     // 기록 및 덧글 보기 기능
-    @GetMapping("/api/study/{studyId}/record/{recordId}")
+    @GetMapping("/api/studies/{studyId}/records/{recordId}")
     public ResponseEntity<RecordCommentResponse> viewRecordComment(@PathVariable Long studyId,
                                                                    @PathVariable Long recordId,
                                                                    @AuthenticationPrincipal User user) {

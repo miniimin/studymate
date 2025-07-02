@@ -19,16 +19,28 @@ public class ParticipantController {
     private final ParticipantService participantService;
 
     // 스터디 참여 요청
-    @PostMapping("/api/study/{id}/join")
-    public ResponseEntity<JoinStudyResponse> joinStudy (@PathVariable Long id, @RequestBody JoinStudyRequest request) {
+    @PostMapping("/api/studies/{studyId}/join")
+    public ResponseEntity<JoinStudyResponse> joinStudy (@PathVariable Long studyId, @RequestBody JoinStudyRequest request) {
         JoinStudyResponse response = participantService.joinStudy(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 참여중 및 참여완료 스터디 리스트 조회 기능
-    @GetMapping("/api/my-study")
+    // 참여한 스터디 리스트 조회 기능
+    @GetMapping("/api/users/me/studies")
     public ResponseEntity<MyStudyResponse> getMyStudyList(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.OK).body(participantService.getMyStudyList(user));
+    }
+
+    // 참여한 스터디 중 진행중 스터디 리스트 조회 기능
+    @GetMapping("/api/users/me/studies/ongoing")
+    public ResponseEntity<MyStudyResponse> getMyStudyOngoingList(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(participantService.getMyStudyOngoingList(user));
+    }
+    
+    // 참여한 스터디 중 완료 스터디 리스트 조회 기능
+    @GetMapping("/api/users/me/studies/completed")
+    public ResponseEntity<MyStudyResponse> getMyStudyCompletedList(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(participantService.getMyStudyCompletedList(user));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.studymate.Study.controller;
+package com.example.studymate.Page;
 
 import com.example.studymate.Study.dto.MyStudyResponse;
 import com.example.studymate.Study.dto.StudySummary;
@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,16 +28,17 @@ public class PageController {
     public ResponseEntity<Map<String, Object>> getMainPage(@AuthenticationPrincipal User user){
         System.out.println("main api 실행 " + user);
 
-        MyStudyResponse myStudyResponse = null;
+        MyStudyResponse myStudyResponse;
         if (user != null) {
             myStudyResponse = participantService.getMyStudyOngoingList(user);
+        } else {
+            myStudyResponse = new MyStudyResponse(Collections.emptyList(), Collections.emptyList());
         }
         List<StudySummary> recruitingResponse = groupService.getRecruitingStudyList();
 
         Map<String, Object> response = new HashMap<>();
         response.put("myStudyOngoing", myStudyResponse);
         response.put("StudyRecruiting", recruitingResponse);
-
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

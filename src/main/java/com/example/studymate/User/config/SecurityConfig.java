@@ -24,15 +24,25 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
                             "/api/main",
-                            "/api/user/login",
-                            "/api/user").permitAll()
-                    .anyRequest().authenticated()
+                            "/api/auth/**",
+                            "/api/users",
+                            "/api/studies",
+                            "/api/studies/**").permitAll()
+                    .requestMatchers(
+                            "api/users/me",
+                            "/api/studies/*/join",
+                            "/api/users/me/studies",
+                            "/api/users/me/studies/**",
+                            "/api/studies/{studyId}/records/",
+                            "/api/studies/{studyId}/records/**"
+                    ).authenticated()
+                    .anyRequest().denyAll()
             )
             .formLogin(login -> login
-                    .loginProcessingUrl("/api/user/login")
+                    .loginProcessingUrl("/api/auth/login")
                     .permitAll())
             .logout(logout -> logout
-                    .logoutUrl("/api/user/logout")
+                    .logoutUrl("/api/auth/logout")
                     .logoutSuccessUrl("/")
             );
         return http.build();
@@ -49,6 +59,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
