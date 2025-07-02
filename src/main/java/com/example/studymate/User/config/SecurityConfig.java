@@ -1,5 +1,6 @@
 package com.example.studymate.User.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +24,15 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(apiConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
+                            "/",
                             "/api/main",
                             "/api/auth/**",
                             "/api/users",
+                            "/api/users/me",
                             "/api/studies",
-                            "/api/studies/**").permitAll()
+                            "/api/studies/**"
+                    ).permitAll()
                     .requestMatchers(
-                            "api/users/me",
                             "/api/studies/*/join",
                             "/api/users/me/studies",
                             "/api/users/me/studies/**",
@@ -40,18 +43,23 @@ public class SecurityConfig {
             )
             .formLogin(login -> login
                     .loginProcessingUrl("/api/auth/login")
+                    .successHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        response.setContentType("application/json");
+                    })
+                    .failureHandler((request, response, exception) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                    })
                     .permitAll())
             .logout(logout -> logout
                     .logoutUrl("/api/auth/logout")
-                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
             );
         return http.build();
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     UrlBasedCorsConfigurationSource apiConfigurationSource() {
@@ -64,4 +72,10 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }

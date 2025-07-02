@@ -4,12 +4,9 @@ import com.example.studymate.User.dto.AddUserRequest;
 import com.example.studymate.User.entity.User;
 import com.example.studymate.User.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,9 +31,15 @@ public class UserController {
     // 내 정보 조회
     @GetMapping("/api/users/me")
     public ResponseEntity<Map<String, Object>> getUserInfo(@AuthenticationPrincipal User user) {
-        System.out.println(user);
         Map<String, Object> response = new HashMap<>();
-        response.put("nickname", user != null ? user.getNickname() : null);
+        if (user == null){
+            response.put("isLoggedIn", false);
+        } else {
+            response.put("nickname", user.getNickname());
+            response.put("isLoggedIn", true);
+        }
+        System.out.println("유저 정보: " + user);
+        System.out.println("응답 정보: " + response);
         return ResponseEntity.ok(response);
     }
 
