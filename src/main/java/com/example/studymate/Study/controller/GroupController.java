@@ -5,6 +5,8 @@ import com.example.studymate.Study.dto.StudySummary;
 import com.example.studymate.Study.dto.StudyDetailResponse;
 import com.example.studymate.Study.service.GroupService;
 import com.example.studymate.User.entity.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,12 +21,14 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final ObjectMapper objectMapper;
 
     // 스터디 생성 기능
     @PostMapping("/api/studies")
-    public ResponseEntity<AddStudyResponse> createStudy(
-            @Valid @RequestBody AddStudyRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createStudy(request));
+    public ResponseEntity<AddStudyResponse> createStudy(@AuthenticationPrincipal User user ,
+                                                        @RequestBody AddStudyRequest request) throws JsonProcessingException {
+        System.out.println(objectMapper.writeValueAsString(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createStudy(request, user));
     }
 
     // 스터디 상세 조회 기능

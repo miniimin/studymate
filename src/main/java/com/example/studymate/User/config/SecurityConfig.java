@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +33,7 @@ public class SecurityConfig {
                             "/api/studies",
                             "/api/studies/**"
                     ).permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/studies").authenticated()
                     .requestMatchers(
                             "/api/studies/*/join",
                             "/api/users/me/studies",

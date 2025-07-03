@@ -6,6 +6,7 @@ import com.example.studymate.Study.entity.StudyParticipant;
 import com.example.studymate.Study.repository.GroupRepository;
 import com.example.studymate.Study.repository.ParticipantRepository;
 import com.example.studymate.Study.repository.RecordRepository;
+import com.example.studymate.User.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,17 @@ public class GroupService {
     private final RecordRepository recordRepository;
 
     @Transactional
-    public AddStudyResponse createStudy(AddStudyRequest request) {
+    public AddStudyResponse createStudy(AddStudyRequest request, User user) {
+        request.setCreatorId(user.getId());
+        request.setCreatorName(user.getNickname());
+
         StudyGroup study = groupRepository.save(request.toEntity());
+
         StudyParticipant leader = StudyParticipant.createLeader(study.getId(), study.getCreatorId());
         participantRepository.save(leader);
+
+        System.out.println("ㅅ스터디아이디 뜨나요" + study.getId());
+
         return new AddStudyResponse(study.getId());
     }
 
