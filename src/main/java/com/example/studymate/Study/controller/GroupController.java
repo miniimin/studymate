@@ -1,8 +1,5 @@
 package com.example.studymate.Study.controller;
-import com.example.studymate.Study.dto.AddStudyRequest;
-import com.example.studymate.Study.dto.AddStudyResponse;
-import com.example.studymate.Study.dto.StudySummary;
-import com.example.studymate.Study.dto.StudyDetailResponse;
+import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.service.GroupService;
 import com.example.studymate.User.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,35 +18,44 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
-    private final ObjectMapper objectMapper;
 
-    // 스터디 생성 기능
+    // 스터디 만들기 기능
     @PostMapping("/api/studies")
-    public ResponseEntity<AddStudyResponse> createStudy(@AuthenticationPrincipal User user ,
-                                                        @RequestBody AddStudyRequest request) throws JsonProcessingException {
-        System.out.println(objectMapper.writeValueAsString(request));
-        return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createStudy(request, user));
+    public ResponseEntity<StudyResponse> addStudy(@RequestBody AddStudyRequest request,
+                                                  @AuthenticationPrincipal User user) {
+        StudyResponse savedStudy = groupService.addStudy(request, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudy);
     }
 
-    // 스터디 상세 조회 기능
-    @GetMapping("/api/studies/{studyId}")
-    public ResponseEntity<StudyDetailResponse> getStudyDetail(@PathVariable Long studyId,
-                                                              @AuthenticationPrincipal User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(groupService.getStudyDetail(studyId, user.getId()));
+    // 스터디 전체 리스트 조회 기능
+    @GetMapping("/api/studies")
+    public ResponseEntity<List<StudyListResponse>> getStudyList() {
+        List<StudyListResponse> studyList = groupService.getStudyList();
+        return ResponseEntity.ok().body(studyList);
     }
+
+    // 스터디 조회 기능
+    @GetMapping("/api/studies/{studyId}")
+    public ResponseEntity<StudyResponse> getStudy(@PathVariable Long studyId,
+                                                  @AuthenticationPrincipal User user) {
+        StudyResponse study = groupService.getStudy(studyId);
+        return ResponseEntity.status(HttpStatus.OK).body(study);
+    }
+
+    //----------------------------------------------------------------------------
 
     // 모집중 스터디 리스트 조회 기능
-    @GetMapping("/api/studies/recruiting")
-    public ResponseEntity<List<StudySummary>> getRecruitingStudyList() {
-        List<StudySummary> studyList = groupService.getRecruitingStudyList();
-        return ResponseEntity.status(HttpStatus.OK).body(studyList);
-    }
+//    @GetMapping("/api/studies/recruiting")
+//    public ResponseEntity<List<StudyListResponse>> getRecruitingStudyList() {
+//        List<StudyListResponse> studyList = groupService.getRecruitingStudyList();
+//        return ResponseEntity.status(HttpStatus.OK).body(studyList);
+//    }
 
     // 모집중 스터디 검색 기능
-    @GetMapping("/api/studies/recruiting/search")
-    public ResponseEntity<List<StudySummary>> getRecruitingSearchList(@RequestParam String query) {
-        List<StudySummary> studyList = groupService.getRecruitingSearchList(query);
-        return ResponseEntity.status(HttpStatus.OK).body(studyList);
-    }
+//    @GetMapping("/api/studies/recruiting/search")
+//    public ResponseEntity<List<StudyListResponse>> getRecruitingSearchList(@RequestParam String query) {
+//        List<StudyListResponse> studyList = groupService.getRecruitingSearchList(query);
+//        return ResponseEntity.status(HttpStatus.OK).body(studyList);
+//    }
 
 }

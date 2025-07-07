@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<StudyComment, Long> {
     List<StudyComment> findAllByRecordId(Long recordId);
+
+    StudyComment findByCommentId(Long id);
 }

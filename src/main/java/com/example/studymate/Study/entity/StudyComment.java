@@ -3,6 +3,7 @@ package com.example.studymate.Study.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class StudyComment {
     private String content;
     @CreatedDate
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
     public StudyComment(Long recordId,
@@ -32,5 +34,10 @@ public class StudyComment {
         this.authorName = authorName;
         this.content = content;
 
+    }
+
+    public void update(String content) {
+        this.content = content;
+        this.updatedAt = LocalDateTime.now();
     }
 }

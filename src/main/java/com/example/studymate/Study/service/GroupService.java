@@ -19,50 +19,38 @@ import java.util.List;
 public class GroupService {
 
     private final GroupRepository groupRepository;
-    private final ParticipantRepository participantRepository;
-    private final RecordRepository recordRepository;
 
-    @Transactional
-    public AddStudyResponse createStudy(AddStudyRequest request, User user) {
-        request.setCreatorId(user.getId());
-        request.setCreatorName(user.getNickname());
-
-        StudyGroup study = groupRepository.save(request.toEntity());
-
-        StudyParticipant leader = StudyParticipant.createLeader(study.getId(), study.getCreatorId());
-        participantRepository.save(leader);
-
-        System.out.println("ㅅ스터디아이디 뜨나요" + study.getId());
-
-        return new AddStudyResponse(study.getId());
+    public StudyResponse addStudy(AddStudyRequest request, User user) {
+        StudyGroup study = StudyGroup.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .creatorId(user.getId())
+                .creatorName(user.getNickname())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .recruitDeadline(request.getRecruitDeadline())
+                .build();
+        StudyGroup savedStudy = groupRepository.save(study);
+        return StudyResponse.from(savedStudy);
     }
 
-    public StudyDetailResponse getStudyDetail(Long studyId, Long userId) {
-        StudyGroup study = groupRepository.findById(studyId).orElseThrow(
-                () -> new IllegalArgumentException("해당 스터디가 존재하지 않습니다.")
-        );
-
-        Boolean isParticipant = participantRepository.existsByStudyGroupIdAndUserId(studyId, userId);
-
-        List<RecordListResponse> recordList =
-                recordRepository.findByStudyGroupId(studyId)
-                        .stream()
-                        .map(RecordListResponse::new)
-                        .toList();
-    return new StudyDetailResponse(study, isParticipant, recordList);
-    }
-
-    public List<StudySummary> getRecruitingStudyList() {
-        return groupRepository.findByRecruitDeadlineAfter(LocalDateTime.now())
+    public List<StudyListResponse> getStudyList() {
+        return groupRepository.findAll()
                 .stream()
-                .map(StudySummary::new)
+                .map(StudyListResponse::from)
                 .toList();
     }
 
-    public List<StudySummary> getRecruitingSearchList(String query) {
+    public StudyResponse getStudy(Long studyId) {
+        StudyGroup study = groupRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스터디 id"));
+        return StudyResponse.from(study);
+    }
+
+    public List<StudyListResponse> getRecruitingSearchList(String query, int page, int size) {
         return groupRepository.searchRecruitingStudy(LocalDateTime.now(), query)
                 .stream()
-                .map(StudySummary::new)
+                .map(StudyListResponse::from)
                 .toList();
     }
 }

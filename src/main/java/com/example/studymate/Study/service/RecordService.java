@@ -1,10 +1,7 @@
 package com.example.studymate.Study.service;
 
 import com.example.studymate.Study.dto.*;
-import com.example.studymate.Study.entity.StudyComment;
 import com.example.studymate.Study.entity.StudyRecord;
-import com.example.studymate.Study.repository.CommentRepository;
-import com.example.studymate.Study.repository.ParticipantRepository;
 import com.example.studymate.Study.repository.RecordRepository;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -16,52 +13,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecordService {
 
-    private final ParticipantRepository participantRepository;
     private final RecordRepository recordRepository;
-    private final CommentRepository commentRepository;
 
-    public AddRecordResponse createRecord(Long studyId,
-                                          AddRecordRequest request,
-                                          User user) {
-        Long userId = user.getId();
-        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
-            throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
-        }
-        StudyRecord record = recordRepository.save(request.toEntity());
-        return new AddRecordResponse(record.getId());
+    public RecordResponse addRecord(Long studyId,
+                                    AddRecordRequest request,
+                                    User user) {
+        StudyRecord studyRecord = StudyRecord.builder()
+                .studyGroupId(studyId)
+                .authorId(user.getId())
+                .authorName(user.getNickname())
+                .title(request.getTitle())
+                .content(request.getContent())
+                .build();
+        StudyRecord savedRecord = recordRepository.save(studyRecord);
+        return RecordResponse.from(savedRecord);
     }
 
-    public AddCommentResponse createComment(Long studyId,
-                                            Long recordId,
-                                            AddCommentRequest request,
-                                            User user) {
-        Long userId = user.getId();
-        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
-            throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
-        }
-        if (!recordRepository.existsById(recordId)){
-            throw new IllegalArgumentException("스터디 기록이 존재하지 않습니다.");
-        }
-        StudyComment comment = commentRepository.save(request.toEntity());
-        return new AddCommentResponse(comment.getRecordId());
-    }
-
-    public RecordCommentResponse viewRecordAndComment(Long studyId,
-                                                      Long recordId,
-                                                      User user) {
-        Long userId = user.getId();
-        if (!participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
-            throw new IllegalArgumentException("스터디 참여자가 아닙니다.");
-        }
-        StudyRecord record = recordRepository.findById(recordId).orElseThrow(
-                () -> new IllegalArgumentException("스터디 기록이 존재하지 않습니다.")
-        );
-        List<CommentResponse> commentList = commentRepository.findAllByRecordId(recordId)
+    public List<RecordListResponse> getRecordsList(Long studyId) {
+        return recordRepository.findAllByStudyGroupId(studyId)
                 .stream()
-                .map(CommentResponse::new)
+                .map(RecordListResponse::from)
                 .toList();
-        return new RecordCommentResponse(record, commentList);
     }
 
+    public RecordResponse getRecord(Long recordId,
+                                    User user) {
+        StudyRecord record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
+
+        return RecordResponse.from(record);
+    }
+
+    public RecordResponse updateRecord(Long recordId,
+                                       UpdateRecordRequest request,
+                                       User user) {
+        StudyRecord record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
+
+        record.update(request);
+        return RecordResponse.from(record);
+    }
+
+    public void deleteRecord(Long recordId,
+                             User user) {
+        StudyRecord record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
+
+        recordRepository.deleteById(recordId);
+    }
 
 }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyGroup {
 
     @Id
@@ -27,10 +28,6 @@ public class StudyGroup {
     @CreatedDate
     private LocalDateTime createdAt;
     private String studyStatus; // 스터디 시작전 / 진행중 / 종료 상태 확인
-
-    protected StudyGroup() {
-
-    }
 
     @Builder
     public StudyGroup(String title,

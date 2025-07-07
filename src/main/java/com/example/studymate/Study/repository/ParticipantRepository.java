@@ -11,10 +11,13 @@ import java.util.List;
 
 @Repository
 public interface ParticipantRepository extends JpaRepository<StudyParticipant, Long> {
-    
+
+    // 스터디 참여 멤버 전부 확인
+    List<StudyParticipant> findAllByStudyId(Long studyId);
+
     // 유저가 스터디 멤버인지 확인
     boolean existsByStudyGroupIdAndUserId(Long studyGroupId, Long userId);
-    
+
     // 유저가 참여한 스터디 리스트 전부 확인
     List<StudyParticipant> findByUserId(Long userId);
 

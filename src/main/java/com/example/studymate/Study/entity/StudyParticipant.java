@@ -18,23 +18,18 @@ public class StudyParticipant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long studyGroupId;
+    private Long studyId;
     private Long userId;
     @CreatedDate
     private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private ParticipantRole role;
 
-    public static StudyParticipant createMember(Long studyGroupId, Long userId) {
-        return new StudyParticipant(studyGroupId, userId, ParticipantRole.MEMBER);
-    }
-
-    public static StudyParticipant createLeader(Long studyGroupId, Long userId) {
-        return new StudyParticipant(studyGroupId, userId, ParticipantRole.LEADER);
-    }
-
-    private StudyParticipant(Long studyGroupId, Long userId, ParticipantRole role) {
-        this.studyGroupId = studyGroupId;
+    @Builder
+    private StudyParticipant(Long studyId,
+                             Long userId,
+                             ParticipantRole role) {
+        this.studyId = studyId;
         this.userId = userId;
         this.role = role;
     }

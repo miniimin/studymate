@@ -1,5 +1,6 @@
 package com.example.studymate.Study.entity;
 
+import com.example.studymate.Study.dto.UpdateRecordRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,5 +36,10 @@ public class StudyRecord {
         this.authorName = authorName;
         this.title = title;
         this.content = content;
+    }
+
+    public void update(UpdateRecordRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();;
     }
 }

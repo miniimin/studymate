@@ -1,18 +1,13 @@
 package com.example.studymate.Study.service;
 
-import com.example.studymate.Study.dto.JoinStudyRequest;
-import com.example.studymate.Study.dto.JoinStudyResponse;
-import com.example.studymate.Study.dto.MyStudyResponse;
-import com.example.studymate.Study.dto.StudySummary;
-import com.example.studymate.Study.entity.StudyGroup;
+import com.example.studymate.Study.constant.ParticipantRole;
+import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.entity.StudyParticipant;
-import com.example.studymate.Study.repository.GroupRepository;
 import com.example.studymate.Study.repository.ParticipantRepository;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,52 +15,53 @@ import java.util.List;
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
-    private final GroupRepository groupRepository;
 
-    public JoinStudyResponse joinStudy(JoinStudyRequest request) {
-        if (participantRepository.existsByStudyGroupIdAndUserId(request.getStudyGroupId(), request.getUserId())) {
+    public ParticipantResponse joinStudy(Long studyId, User user) {
+        Long userId = user.getId();
+
+        if (participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
             throw new IllegalArgumentException("이미 참여 중인 사용자입니다.");
         }
-        StudyParticipant member = StudyParticipant.createMember(request.getStudyGroupId(), request.getUserId());
+
+        StudyParticipant member = StudyParticipant
+                .builder()
+                .studyId(studyId)
+                .userId(userId)
+                .role(ParticipantRole.MEMBER)
+                .build();
+
         participantRepository.save(member);
-        return new JoinStudyResponse();
+        return ParticipantResponse.from(member);
     }
 
-    public MyStudyResponse getMyStudyList(User user) {
+    public List<ParticipantResponse> getParticipants (Long studyId) {
+        return participantRepository.findAllByStudyId(studyId)
+                .stream()
+                .map(ParticipantResponse::from)
+                .toList();
+    }
+
+    public boolean isParticipant(Long studyId, User user) {
+        Long userId = user.getId();
+         return participantRepository.existsByStudyGroupIdAndUserId(studyId, userId);
+    }
+
+
+    public List<StudyListResponse> getMyStudyOngoingList(User user) {
         Long userId = user.getId();
 
-        List<StudySummary> onGoing = participantRepository.findMyStudyOngoing(userId)
+        return participantRepository.findMyStudyOngoing(userId)
                 .stream()
-                .map(StudySummary::new)
+                .map(StudyListResponse::from)
                 .toList();
-        List<StudySummary> completed = participantRepository.findMyStudyCompleted(userId)
-                .stream()
-                .map(StudySummary::new)
-                .toList();
-
-        return new MyStudyResponse(onGoing, completed);
     }
 
-    public MyStudyResponse getMyStudyOngoingList(User user) {
+    public List<StudyListResponse> getMyStudyCompletedList(User user) {
         Long userId = user.getId();
 
-        List<StudySummary> onGoing = participantRepository.findMyStudyOngoing(userId)
+        return participantRepository.findMyStudyCompleted(userId)
                 .stream()
-                .map(StudySummary::new)
+                .map(StudyListResponse::from)
                 .toList();
-
-        return new MyStudyResponse(onGoing, null);
     }
-
-    public MyStudyResponse getMyStudyCompletedList(User user) {
-        Long userId = user.getId();
-
-        List<StudySummary> completed = participantRepository.findMyStudyCompleted(userId)
-                .stream()
-                .map(StudySummary::new)
-                .toList();
-
-        return new MyStudyResponse(null, completed);
-    }
-
 }
