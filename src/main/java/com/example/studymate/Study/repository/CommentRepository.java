@@ -10,5 +10,4 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<StudyComment, Long> {
     List<StudyComment> findAllByRecordId(Long recordId);
 
-    StudyComment findByCommentId(Long id);
 }

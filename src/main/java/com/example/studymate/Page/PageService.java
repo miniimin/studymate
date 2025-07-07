@@ -7,6 +7,7 @@ import com.example.studymate.Study.service.ParticipantService;
 import com.example.studymate.Study.service.RecordService;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class PageService {
     private final CommentService commentService;
 
     public Map<String, Object> getMain(User user) {
-        List<StudyListResponse> ongoingResponse = (user != null)
+        List<MyStudyListDto> ongoingResponse = (user != null)
             ? participantService.getMyStudyOngoingList(user)
             : null;
 
@@ -40,8 +41,8 @@ public class PageService {
     }
 
     public Map<String, Object> getMyStudy(User user) {
-        List<StudyListResponse> ongoingResponse = participantService.getMyStudyOngoingList(user);
-        List<StudyListResponse> completedResponse = participantService.getMyStudyCompletedList(user);
+        List<MyStudyListDto> ongoingResponse = participantService.getMyStudyOngoingList(user);
+        List<MyStudyListDto> completedResponse = participantService.getMyStudyCompletedList(user);
 
         Map<String, Object> response = new HashMap<>();
         response.put("ongoingStudyList", ongoingResponse);
@@ -55,7 +56,7 @@ public class PageService {
 //    }
 
     public Map<String, Object> getSearchStudy(String query, int page, int size) {
-        List<StudyListResponse> studyList = groupService.getRecruitingSearchList(query, page, size);
+        Page<SearchStudyListDto> studyList = groupService.getRecruitingStudiesNotFull(query, page, size);
 
         Map<String, Object> response = new HashMap<>();
         response.put("searchStudyList", studyList);
@@ -67,10 +68,12 @@ public class PageService {
 
         boolean isParticipant = participantService.isParticipant(studyId, user);
         StudyResponse study = groupService.getStudy(studyId);
+        List<ParticipantResponse> participants = participantService.getParticipants(studyId);
         List<RecordListResponse> recordList = recordService.getRecordsList(studyId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("isParticipant", isParticipant);
+        response.put("participantNum", participants.size());
         response.put("studyDetail", study);
         response.put("recordList", recordList);
 

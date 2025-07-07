@@ -19,8 +19,8 @@ public class ParticipantService {
     public ParticipantResponse joinStudy(Long studyId, User user) {
         Long userId = user.getId();
 
-        if (participantRepository.existsByStudyGroupIdAndUserId(studyId, userId)) {
-            throw new IllegalArgumentException("이미 참여 중인 사용자입니다.");
+        if (participantRepository.existsByStudyIdAndUserId(studyId, userId)) {
+            throw new IllegalArgumentException("이미 참여 중인 사용자");
         }
 
         StudyParticipant member = StudyParticipant
@@ -43,25 +43,19 @@ public class ParticipantService {
 
     public boolean isParticipant(Long studyId, User user) {
         Long userId = user.getId();
-         return participantRepository.existsByStudyGroupIdAndUserId(studyId, userId);
+         return participantRepository.existsByStudyIdAndUserId(studyId, userId);
     }
 
 
-    public List<StudyListResponse> getMyStudyOngoingList(User user) {
+    public List<MyStudyListDto> getMyStudyOngoingList(User user) {
         Long userId = user.getId();
 
-        return participantRepository.findMyStudyOngoing(userId)
-                .stream()
-                .map(StudyListResponse::from)
-                .toList();
+        return participantRepository.findMyStudyOngoing(userId);
     }
 
-    public List<StudyListResponse> getMyStudyCompletedList(User user) {
+    public List<MyStudyListDto> getMyStudyCompletedList(User user) {
         Long userId = user.getId();
 
-        return participantRepository.findMyStudyCompleted(userId)
-                .stream()
-                .map(StudyListResponse::from)
-                .toList();
+        return participantRepository.findMyStudyCompleted(userId);
     }
 }

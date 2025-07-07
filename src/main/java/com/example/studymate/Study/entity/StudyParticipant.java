@@ -33,5 +33,4 @@ public class StudyParticipant {
         this.userId = userId;
         this.role = role;
     }
-
 }

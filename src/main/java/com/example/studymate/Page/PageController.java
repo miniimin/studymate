@@ -58,7 +58,7 @@ public class PageController {
     }
 
     // 스터디 기록 상세 내용
-    @GetMapping("/api/page/studies/{studyId}/records")
+    @GetMapping("/api/studies/{studyId}/records/{recordId}/details")
     public ResponseEntity<Map<String, Object>> getRecordDetail(@PathVariable Long studyId,
                                                                @PathVariable Long recordId,
                                                                @AuthenticationPrincipal User user) {

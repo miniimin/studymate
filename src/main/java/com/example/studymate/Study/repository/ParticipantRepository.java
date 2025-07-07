@@ -1,6 +1,6 @@
 package com.example.studymate.Study.repository;
 
-import com.example.studymate.Study.entity.StudyGroup;
+import com.example.studymate.Study.dto.MyStudyListDto;
 import com.example.studymate.Study.entity.StudyParticipant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,26 +16,32 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
     List<StudyParticipant> findAllByStudyId(Long studyId);
 
     // 유저가 스터디 멤버인지 확인
-    boolean existsByStudyGroupIdAndUserId(Long studyGroupId, Long userId);
+    boolean existsByStudyIdAndUserId(Long studyId, Long userId);
 
     // 유저가 참여한 스터디 리스트 전부 확인
     List<StudyParticipant> findByUserId(Long userId);
 
     // 유저가 참여한 스터디 중 진행중 스터디 리스트 확인
     @Query("""
-            SELECT g
+            SELECT new com.example.studymate.Study.dto.MyStudyListDto(
+                s.id, s.title, s.description, s.startDate, s.endDate,
+                s.participantsMax, s.recruitDeadline, p.role
+            )
             FROM StudyParticipant p
-            JOIN StudyGroup g ON g.id = p.studyGroupId
-            WHERE p.userId = :userId AND g.endDate > CURRENT_TIMESTAMP
+            JOIN StudyGroup s ON s.id = p.studyId
+            WHERE p.userId = :userId AND s.endDate > CURRENT_TIMESTAMP
             """)
-    List<StudyGroup> findMyStudyOngoing(@Param("userId") Long userId);
+    List<MyStudyListDto> findMyStudyOngoing(@Param("userId") Long userId);
 
     // 유저가 참여한 스터디 중 완료된 스터디 리스트 확인
     @Query("""
-            SELECT g
+            SELECT new com.example.studymate.Study.dto.MyStudyListDto(
+                s.id, s.title, s.description, s.startDate, s.endDate,
+                s.participantsMax, s.recruitDeadline, p.role
+            )
             FROM StudyParticipant p
-            JOIN StudyGroup g ON g.id = p.studyGroupId
-            WHERE p.userId = :userId AND g.endDate < CURRENT_TIMESTAMP
+            JOIN StudyGroup s ON s.id = p.studyId
+            WHERE p.userId = :userId AND s.endDate < CURRENT_TIMESTAMP
             """)
-    List<StudyGroup> findMyStudyCompleted(@Param("userId") Long userId);
+    List<MyStudyListDto> findMyStudyCompleted(@Param("userId") Long userId);
 }

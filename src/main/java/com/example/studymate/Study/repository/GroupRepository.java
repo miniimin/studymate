@@ -1,6 +1,9 @@
 package com.example.studymate.Study.repository;
 
+import com.example.studymate.Study.dto.SearchStudyListDto;
 import com.example.studymate.Study.entity.StudyGroup;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +17,26 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
 
     List<StudyGroup> findByRecruitDeadlineAfter(LocalDateTime now);
 
-    @Query("SELECT s FROM StudyGroup s WHERE s.recruitDeadline > :now AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)")
-    List<StudyGroup> searchRecruitingStudy(@Param("now") LocalDateTime now, @Param("keyword") String query);
+    @Query("""
+                SELECT s FROM StudyGroup s WHERE s.recruitDeadline > :now
+                AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
+            """)
+    List<StudyGroup> findRecruitingStudies(@Param("now") LocalDateTime now, @Param("keyword") String query);
+
+    @Query("""
+                SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
+                    s.id, s.title, s.description, s.startDate, s.endDate,
+                    s.participantsMax, COUNT(p.id), s.recruitDeadline
+                )
+                FROM StudyGroup s
+                LEFT JOIN StudyParticipant p ON p.studyId = s.id
+                WHERE s.recruitDeadline > :now
+                    AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
+                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline
+                HAVING s.participantsMax > COUNT(p.id)
+            """)
+    Page<SearchStudyListDto> findRecruitingStudiesNotFull(@Param("now") LocalDateTime now,
+                                                          @Param("keyword") String query,
+                                                          Pageable pageable);
 
 }
