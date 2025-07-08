@@ -13,6 +13,7 @@ public class RecordListResponse {
     private Long studyGroupId;
     private String authorName;
     private String title;
+    private String content;
     private LocalDateTime createdAt;
 
     public static RecordListResponse from(StudyRecord record) {
@@ -21,6 +22,7 @@ public class RecordListResponse {
                 record.getStudyGroupId(),
                 record.getAuthorName(),
                 record.getTitle(),
+                record.getContent(),
                 record.getCreatedAt()
         );
     }

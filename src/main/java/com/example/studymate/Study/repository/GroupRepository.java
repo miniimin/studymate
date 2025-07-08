@@ -26,13 +26,13 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
     @Query("""
                 SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
                     s.id, s.title, s.description, s.startDate, s.endDate,
-                    s.participantsMax, COUNT(p.id), s.recruitDeadline
+                    s.participantsMax, COUNT(p.id), s.recruitDeadline, s.createdAt
                 )
                 FROM StudyGroup s
                 LEFT JOIN StudyParticipant p ON p.studyId = s.id
                 WHERE s.recruitDeadline > :now
                     AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
-                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline
+                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline, s.createdAt
                 HAVING s.participantsMax > COUNT(p.id)
             """)
     Page<SearchStudyListDto> findRecruitingStudiesNotFull(@Param("now") LocalDateTime now,

@@ -13,8 +13,9 @@
         private String description;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
-        private Integer participantsMax;
+        private Long participantsMax;
         private Long participantsNum;
         private LocalDateTime recruitDeadline;
+        private LocalDateTime createdAt;
 
     }

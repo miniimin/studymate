@@ -29,6 +29,7 @@ public class GroupService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .recruitDeadline(request.getRecruitDeadline())
+                .participantsMax(request.getParticipantsMax())
                 .build();
         StudyGroup savedStudy = groupRepository.save(study);
         return StudyResponse.from(savedStudy);

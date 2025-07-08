@@ -24,7 +24,7 @@ public class AddStudyRequest {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
 
-    private Integer participantsMax;
+    private Long participantsMax;
     private LocalDateTime recruitDeadline;
 
 

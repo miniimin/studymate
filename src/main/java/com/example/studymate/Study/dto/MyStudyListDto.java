@@ -14,7 +14,7 @@ public class MyStudyListDto {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Integer participantsMax;
+    private Long participantsMax;
     private LocalDateTime recruitDeadline;
     private ParticipantRole role;
 }

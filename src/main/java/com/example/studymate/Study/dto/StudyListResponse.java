@@ -14,7 +14,7 @@ public class StudyListResponse {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Integer participantsMax;
+    private Long participantsMax;
     private LocalDateTime recruitDeadline;
 
     public static StudyListResponse from(StudyGroup study) {

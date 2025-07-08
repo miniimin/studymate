@@ -23,7 +23,7 @@ public class StudyGroup {
     private String creatorName; // 스터디 생성자 닉네임
     private LocalDateTime startDate; // 스터디 시작일
     private LocalDateTime endDate; // 스터디 마감일
-    private Integer participantsMax; // 스터디 최대 참여 가능 인원
+    private Long participantsMax; // 스터디 최대 참여 가능 인원
     private LocalDateTime recruitDeadline; // 스터디 모집 종료일
     @CreatedDate
     private LocalDateTime createdAt;
@@ -36,7 +36,7 @@ public class StudyGroup {
                       String creatorName,
                       LocalDateTime startDate,
                       LocalDateTime endDate,
-                      Integer participantsMax,
+                      Long participantsMax,
                       LocalDateTime recruitDeadline) {
         this.title = title;
         this.description = description;
