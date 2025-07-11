@@ -55,8 +55,16 @@ public class GroupService {
                 .toList();
     }
 
-    public Page<SearchStudyListDto> getRecruitingStudiesNotFull(String query, int page, int size) {
+    public SearchStudyPageResponse getRecruitingStudiesNotFull(String query, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return groupRepository.findRecruitingStudiesNotFull(LocalDateTime.now(), query.trim(), pageable);
+        Page<SearchStudyListDto> dto = groupRepository.findRecruitingStudiesNotFull(LocalDateTime.now(), query.trim(), pageable);
+        return new SearchStudyPageResponse(
+                dto.getContent(),
+                dto.getNumber(),
+                dto.getTotalPages(),
+                dto.getTotalElements(),
+                dto.getSize(),
+                dto.isLast()
+        );
     }
 }

@@ -17,6 +17,10 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
 
     public ParticipantResponse joinStudy(Long studyId, User user) {
+        return joinStudy(studyId, user, ParticipantRole.MEMBER);
+    }
+
+    public ParticipantResponse joinStudy(Long studyId, User user, ParticipantRole role) {
         Long userId = user.getId();
 
         if (participantRepository.existsByStudyIdAndUserId(studyId, userId)) {
@@ -27,7 +31,7 @@ public class ParticipantService {
                 .builder()
                 .studyId(studyId)
                 .userId(userId)
-                .role(ParticipantRole.MEMBER)
+                .role(role)
                 .build();
 
         participantRepository.save(member);

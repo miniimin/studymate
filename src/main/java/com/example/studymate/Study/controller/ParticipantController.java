@@ -22,7 +22,6 @@ public class ParticipantController {
     @PostMapping("/api/studies/{studyId}/participants")
     public ResponseEntity<ParticipantResponse> joinStudy (@PathVariable Long studyId,
                                                         @AuthenticationPrincipal User user) {
-        ParticipantRole role;
         ParticipantResponse response = participantService.joinStudy(studyId, user);
         return ResponseEntity.ok().body(response);
     }

@@ -20,8 +20,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailService userDetailService;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -31,6 +29,7 @@ public class SecurityConfig {
                     .requestMatchers(
                             "/",
                             "/api/page/**",
+                            "/api/page/search-study",
                             "/api/auth/**",
                             "/api/users",
                             "/api/users/me",

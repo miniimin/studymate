@@ -1,6 +1,8 @@
 package com.example.studymate.Study.controller;
+import com.example.studymate.Study.constant.ParticipantRole;
 import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.service.GroupService;
+import com.example.studymate.Study.service.ParticipantService;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,12 +17,14 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final ParticipantService participantService;
 
     // 스터디 만들기 기능
     @PostMapping("/api/studies")
     public ResponseEntity<StudyResponse> addStudy(@RequestBody AddStudyRequest request,
                                                   @AuthenticationPrincipal User user) {
         StudyResponse savedStudy = groupService.addStudy(request, user);
+        participantService.joinStudy(savedStudy.getId(), user, ParticipantRole.LEADER);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudy);
     }
 

@@ -56,17 +56,18 @@ public class PageService {
 //    }
 
     public Map<String, Object> getSearchStudy(String query, int page, int size) {
-        Page<SearchStudyListDto> studyList = groupService.getRecruitingStudiesNotFull(query, page, size);
+        SearchStudyPageResponse studyPageData = groupService.getRecruitingStudiesNotFull(query, page, size);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("searchStudyList", studyList);
+        response.put("searchStudyPageData", studyPageData);
 
         return response;
     }
 
     public Map<String, Object> getStudyFeed(Long studyId, User user) {
 
-        boolean isParticipant = participantService.isParticipant(studyId, user);
+        boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
+
         StudyResponse study = groupService.getStudy(studyId);
         List<ParticipantResponse> participants = participantService.getParticipants(studyId);
         List<RecordListResponse> recordList = recordService.getRecordsList(studyId);

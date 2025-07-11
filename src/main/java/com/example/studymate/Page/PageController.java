@@ -2,6 +2,7 @@ package com.example.studymate.Page;
 
 import com.example.studymate.User.entity.User;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +48,10 @@ public class PageController {
     // 스터디 검색 페이지
     @GetMapping("/api/page/search-study")
     public ResponseEntity<Map<String, Object>> getSearchStudyPage(@RequestParam(defaultValue = "") String query,
-                                                                  @RequestParam(defaultValue = "0") @Positive int page,
+                                                                  @RequestParam(defaultValue = "0") @PositiveOrZero int page,
                                                                   @RequestParam(defaultValue = "10") @Positive int size) {
         Map<String, Object> pageData = pageService.getSearchStudy(query, page, size);
+
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 
