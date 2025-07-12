@@ -24,9 +24,6 @@ public class PageController {
     // 메인 페이지
     @GetMapping("/api/page/main")
     public ResponseEntity<Map<String, Object>> getMainPage(@AuthenticationPrincipal User user) {
-
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
-        System.out.println(user);
         Map<String, Object> pageData = pageService.getMain(user);
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
@@ -48,10 +45,9 @@ public class PageController {
     // 스터디 검색 페이지
     @GetMapping("/api/page/search-study")
     public ResponseEntity<Map<String, Object>> getSearchStudyPage(@RequestParam(defaultValue = "") String query,
-                                                                  @RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                                                  @RequestParam(defaultValue = "10") @Positive int size) {
-        Map<String, Object> pageData = pageService.getSearchStudy(query, page, size);
-
+                                                                  @RequestParam(defaultValue = "1") @Positive int page,
+                                                                  @RequestParam(defaultValue = "4") @Positive int size) {
+        Map<String, Object> pageData = pageService.getSearchStudy(query, page - 1, size);
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 

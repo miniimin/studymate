@@ -31,7 +31,7 @@ public class PageService {
         String query = "";
         int page = 0;
         int size = 4;
-        List<StudyListResponse> recruitingResponse = groupService.getRecruitingSearchList(query, page, size);
+        SearchStudyPageResponse recruitingResponse = groupService.getRecruitingStudiesNotFull(query, page, size);
 
         Map<String, Object> response = new HashMap<>();
         response.put("ongoingStudyList", ongoingResponse);
