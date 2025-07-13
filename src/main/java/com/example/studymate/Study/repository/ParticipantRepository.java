@@ -2,6 +2,8 @@ package com.example.studymate.Study.repository;
 
 import com.example.studymate.Study.dto.MyStudyListDto;
 import com.example.studymate.Study.entity.StudyParticipant;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +33,8 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
             JOIN StudyGroup s ON s.id = p.studyId
             WHERE p.userId = :userId AND s.endDate > CURRENT_TIMESTAMP
             """)
-    List<MyStudyListDto> findMyStudyOngoing(@Param("userId") Long userId);
+    Page<MyStudyListDto> findMyStudyOngoing(@Param("userId") Long userId,
+                                            Pageable pageable);
 
     // 유저가 참여한 스터디 중 완료된 스터디 리스트 확인
     @Query("""
@@ -43,5 +46,6 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
             JOIN StudyGroup s ON s.id = p.studyId
             WHERE p.userId = :userId AND s.endDate < CURRENT_TIMESTAMP
             """)
-    List<MyStudyListDto> findMyStudyCompleted(@Param("userId") Long userId);
+    Page<MyStudyListDto> findMyStudyCompleted(@Param("userId") Long userId,
+                                              Pageable pageable);
 }

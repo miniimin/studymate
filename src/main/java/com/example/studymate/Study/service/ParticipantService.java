@@ -6,6 +6,10 @@ import com.example.studymate.Study.entity.StudyParticipant;
 import com.example.studymate.Study.repository.ParticipantRepository;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,16 +54,31 @@ public class ParticipantService {
          return participantRepository.existsByStudyIdAndUserId(studyId, userId);
     }
 
-
-    public List<MyStudyListDto> getMyStudyOngoingList(User user) {
+    public MyStudyPageResponse getMyStudyOngoingList(int page, int size, User user) {
         Long userId = user.getId();
-
-        return participantRepository.findMyStudyOngoing(userId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<MyStudyListDto> dto = participantRepository.findMyStudyOngoing(userId, pageable);
+        return new MyStudyPageResponse(
+                dto.getContent(),
+                dto.getNumber(),
+                dto.getTotalPages(),
+                dto.getTotalElements(),
+                dto.getSize(),
+                dto.isLast()
+        );
     }
 
-    public List<MyStudyListDto> getMyStudyCompletedList(User user) {
+    public MyStudyPageResponse getMyStudyCompletedList(int page, int size, User user) {
         Long userId = user.getId();
-
-        return participantRepository.findMyStudyCompleted(userId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<MyStudyListDto> dto = participantRepository.findMyStudyCompleted(userId, pageable);
+        return new MyStudyPageResponse(
+                dto.getContent(),
+                dto.getNumber(),
+                dto.getTotalPages(),
+                dto.getTotalElements(),
+                dto.getSize(),
+                dto.isLast()
+        );
     }
 }

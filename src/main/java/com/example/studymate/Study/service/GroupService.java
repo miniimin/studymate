@@ -56,7 +56,7 @@ public class GroupService {
     }
 
     public SearchStudyPageResponse getRecruitingStudiesNotFull(String query, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<SearchStudyListDto> dto = groupRepository.findRecruitingStudiesNotFull(LocalDateTime.now(), query.trim(), pageable);
         return new SearchStudyPageResponse(
                 dto.getContent(),
