@@ -67,7 +67,6 @@ public class ParticipantService {
                 dto.isLast()
         );
     }
-
     public MyStudyPageResponse getMyStudyCompletedList(int page, int size, User user) {
         Long userId = user.getId();
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());

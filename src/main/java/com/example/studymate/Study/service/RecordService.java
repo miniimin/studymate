@@ -30,10 +30,11 @@ public class RecordService {
     }
 
     public List<RecordListResponse> getRecordsList(Long studyId) {
-        return recordRepository.findAllByStudyGroupId(studyId)
-                .stream()
-                .map(RecordListResponse::from)
-                .toList();
+        return recordRepository.findRecordListByStudyGroupId(studyId);
+    }
+
+    public List<RecordResponse> getRecords(Long studyId) {
+        return recordRepository.findByStudyGroupId(studyId);
     }
 
     public RecordResponse getRecord(Long recordId,

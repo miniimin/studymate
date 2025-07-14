@@ -29,12 +29,12 @@ public class CommentService {
         return CommentResponse.from(savedComment);
     }
 
-    public List<CommentResponse> getCommentsList(Long recordId,
-                                                 User user) {
-        return commentRepository.findAllByRecordId(recordId)
-                .stream()
-                .map(CommentResponse::from)
-                .toList();
+    public List<CommentResponse> getCommentList(Long recordId) {
+        return commentRepository.findAllByRecordId(recordId);
+    }
+
+    public List<CommentResponse> getComments(List<Long> recordIds) {
+        return commentRepository.findAllByRecordIdIn(recordIds);
     }
 
     public CommentResponse getComment(Long commentId,

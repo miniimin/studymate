@@ -42,7 +42,9 @@ public class SecurityConfig {
                             "/api/users/me/studies",
                             "/api/users/me/studies/**",
                             "/api/studies/{studyId}/records/",
-                            "/api/studies/{studyId}/records/**"
+                            "/api/studies/{studyId}/records/**",
+                            "/api/records/**",
+                            "/api/comments/**"
                     ).authenticated()
                     .anyRequest().denyAll()
             )

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,10 +55,6 @@ public class PageService {
         return response;
     }
 
-//    public Map<String, Object> getNewStudy(User user) {
-//        return null;
-//    }
-
     public Map<String, Object> getSearchStudy(String query, int page, int size) {
         SearchStudyPageResponse studyPageData = groupService.getRecruitingStudiesNotFull(query, page, size);
 
@@ -68,38 +65,55 @@ public class PageService {
     }
 
     public Map<String, Object> getStudyFeed(Long studyId, User user) {
-
         boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
 
         StudyResponse study = groupService.getStudy(studyId);
         List<ParticipantResponse> participants = participantService.getParticipants(studyId);
-        List<RecordListResponse> recordList = recordService.getRecordsList(studyId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("isParticipant", isParticipant);
         response.put("participantNum", participants.size());
         response.put("studyDetail", study);
-        response.put("recordList", recordList);
 
-        return response;
-    }
-
-    public Map<String, Object> getRecordDetail(Long studyId, Long recordId, User user) {
-
-        Map<String, Object> response = new HashMap<>();
-
-        boolean isParticipant = participantService.isParticipant(studyId, user);
+        // 분기점
         if(!isParticipant) {
-            response.put("notMember", null);
-            return response;
+            List<RecordListResponse> recordResponse = recordService.getRecordsList(studyId);
+            response.put("recordList", recordResponse);
+        } else {
+            List<RecordResponse> records = recordService.getRecords(studyId);
+
+            List<Long> recordIds = records.stream().map(RecordResponse::getId).toList();
+
+            List<CommentResponse> comments = commentService.getComments(recordIds);
+            Map<Long, List<CommentResponse>> commentMap = comments
+                    .stream()
+                    .collect(Collectors.groupingBy(CommentResponse::getRecordId));
+            List<RecordsWithCommentsResponse> recordResponse =
+                    records.stream()
+                            .map(r ->
+                                    RecordsWithCommentsResponse.of(r, commentMap.get(r.getId()))
+                                    )
+                            .toList();
+            response.put("recordList", recordResponse);
         }
-
-        RecordResponse record = recordService.getRecord(recordId, user);
-        List<CommentResponse> commentsList = commentService.getCommentsList(recordId, user);
-
-        response.put("recordDetail", record);
-        response.put("comments", commentsList);
-
         return response;
     }
+
+//    public Map<String, Object> getRecordDetail(Long studyId, Long recordId, User user) {
+//
+//        Map<String, Object> response = new HashMap<>();
+//
+//        boolean isParticipant = participantService.isParticipant(studyId, user);
+//        if(!isParticipant) {
+//            return null;
+//        }
+//
+//        RecordResponse record = recordService.getRecord(recordId, user);
+//        List<CommentResponse> commentsList = commentService.getCommentsList(recordId, user);
+//
+//        response.put("recordDetail", record);
+//        response.put("comments", commentsList);
+//
+//        return response;
+//    }
 }

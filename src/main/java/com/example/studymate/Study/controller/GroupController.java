@@ -43,20 +43,5 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(study);
     }
 
-    //----------------------------------------------------------------------------
-
-    // 모집중 스터디 리스트 조회 기능
-//    @GetMapping("/api/studies/recruiting")
-//    public ResponseEntity<List<StudyListResponse>> getRecruitingStudyList() {
-//        List<StudyListResponse> studyList = groupService.getRecruitingStudyList();
-//        return ResponseEntity.status(HttpStatus.OK).body(studyList);
-//    }
-
-    // 모집중 스터디 검색 기능
-//    @GetMapping("/api/studies/recruiting/search")
-//    public ResponseEntity<List<StudyListResponse>> getRecruitingSearchList(@RequestParam String query) {
-//        List<StudyListResponse> studyList = groupService.getRecruitingSearchList(query);
-//        return ResponseEntity.status(HttpStatus.OK).body(studyList);
-//    }
 
 }
