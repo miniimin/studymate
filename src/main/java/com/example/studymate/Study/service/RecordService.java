@@ -5,6 +5,10 @@ import com.example.studymate.Study.entity.StudyRecord;
 import com.example.studymate.Study.repository.RecordRepository;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +33,14 @@ public class RecordService {
         return RecordResponse.from(savedRecord);
     }
 
-    public List<RecordListResponse> getRecordsList(Long studyId) {
-        return recordRepository.findRecordListByStudyGroupId(studyId);
+    public Page<RecordListResponse> getRecordsList(int page, int size, Long studyId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        return recordRepository.findRecordListByStudyGroupId(studyId, pageable);
     }
 
-    public List<RecordResponse> getRecords(Long studyId) {
-        return recordRepository.findByStudyGroupId(studyId);
+    public Page<RecordResponse> getRecords(int page, int size, Long studyId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        return recordRepository.findByStudyGroupId(studyId, pageable);
     }
 
     public RecordResponse getRecord(Long recordId,

@@ -3,6 +3,8 @@ package com.example.studymate.Study.repository;
 import com.example.studymate.Study.dto.RecordListResponse;
 import com.example.studymate.Study.dto.RecordResponse;
 import com.example.studymate.Study.entity.StudyRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +22,7 @@ import java.util.List;
                 FROM StudyRecord r
                 WHERE r.studyGroupId = :studyId
                 """)
-        List<RecordListResponse> findRecordListByStudyGroupId(@Param("studyId") Long studyId);
+        Page<RecordListResponse> findRecordListByStudyGroupId(@Param("studyId") Long studyId, Pageable pageable);
 
-        List<RecordResponse> findByStudyGroupId(Long studyId);
+        Page<RecordResponse> findByStudyGroupId(Long studyId, Pageable pageable);
     }

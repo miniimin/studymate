@@ -4,12 +4,15 @@ import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.service.RecordService;
 import com.example.studymate.User.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,10 +31,18 @@ public class RecordController {
 
     // 기록 전체 리스트 조회
     @GetMapping("/api/studies/{studyId}/records")
-    public ResponseEntity<List<RecordListResponse>> getRecordsList(@PathVariable Long studyId,
-                                                               @AuthenticationPrincipal User user) {
-        List<RecordListResponse> recordList = recordService.getRecordsList(studyId);
-        return ResponseEntity.ok().body(recordList);
+    public ResponseEntity<Map<String, Object>> getRecordsList(@PathVariable Long studyId,
+                                                                   @RequestParam int page,
+                                                                   @RequestParam int size,
+                                                                   @AuthenticationPrincipal User user) {
+        Page<RecordListResponse> recordPage = recordService.getRecordsList(page - 1, size, studyId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("recordList", recordPage.getContent());
+        response.put("currentPage", recordPage.getNumber());
+        response.put("totalPages", recordPage.getTotalPages());
+
+        return ResponseEntity.ok().body(response);
     }
 
     // 개별 기록 조회

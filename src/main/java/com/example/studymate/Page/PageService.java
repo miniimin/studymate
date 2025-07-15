@@ -67,6 +67,9 @@ public class PageService {
     public Map<String, Object> getStudyFeed(Long studyId, User user) {
         boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
 
+        int page = 0;
+        int size = 5;
+
         StudyResponse study = groupService.getStudy(studyId);
         List<ParticipantResponse> participants = participantService.getParticipants(studyId);
 
@@ -77,14 +80,18 @@ public class PageService {
 
         // 분기점
         if(!isParticipant) {
-            List<RecordListResponse> recordResponse = recordService.getRecordsList(studyId);
-            response.put("recordList", recordResponse);
+            Page<RecordListResponse> recordPage = recordService.getRecordsList(page, size, studyId);
+            response.put("recordList", recordPage.getContent());
+            response.put("currentPage", recordPage.getNumber());
+            response.put("totalPages", recordPage.getTotalPages());
+
         } else {
-            List<RecordResponse> records = recordService.getRecords(studyId);
+            Page<RecordResponse> recordPage = recordService.getRecords(page, size, studyId);
+            List<RecordResponse> records = recordPage.getContent();
 
             List<Long> recordIds = records.stream().map(RecordResponse::getId).toList();
 
-            List<CommentResponse> comments = commentService.getComments(recordIds);
+            List<CommentResponse> comments = commentService.getCommentsOfRecords(recordIds);
             Map<Long, List<CommentResponse>> commentMap = comments
                     .stream()
                     .collect(Collectors.groupingBy(CommentResponse::getRecordId));
@@ -94,26 +101,55 @@ public class PageService {
                                     RecordsWithCommentsResponse.of(r, commentMap.get(r.getId()))
                                     )
                             .toList();
+
             response.put("recordList", recordResponse);
+            response.put("currentPage", recordPage.getNumber());
+            response.put("totalPages", recordPage.getTotalPages());
         }
         return response;
     }
 
-//    public Map<String, Object> getRecordDetail(Long studyId, Long recordId, User user) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//
-//        boolean isParticipant = participantService.isParticipant(studyId, user);
-//        if(!isParticipant) {
-//            return null;
-//        }
-//
-//        RecordResponse record = recordService.getRecord(recordId, user);
-//        List<CommentResponse> commentsList = commentService.getCommentsList(recordId, user);
-//
-//        response.put("recordDetail", record);
-//        response.put("comments", commentsList);
-//
-//        return response;
-//    }
+    public RecordsWithCommentsResponse getRecordDetail(Long studyId, Long recordId, User user) {
+        List<CommentResponse> comments = commentService.getCommentsOfRecord(recordId);
+        return null;
+    }
+
+    public Map<String, Object> getOnlyRecordsAndComments(Long studyId, int page, int size, User user) {
+        boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
+
+        StudyResponse study = groupService.getStudy(studyId);
+        List<ParticipantResponse> participants = participantService.getParticipants(studyId);
+
+        Map<String, Object> response = new HashMap<>();
+
+        // 분기점
+        if(!isParticipant) {
+            Page<RecordListResponse> recordPage = recordService.getRecordsList(page, size, studyId);
+            response.put("recordList", recordPage.getContent());
+            response.put("currentPage", recordPage.getNumber());
+            response.put("totalPages", recordPage.getTotalPages());
+
+        } else {
+            Page<RecordResponse> recordPage = recordService.getRecords(page, size, studyId);
+            List<RecordResponse> records = recordPage.getContent();
+
+            List<Long> recordIds = records.stream().map(RecordResponse::getId).toList();
+
+            List<CommentResponse> comments = commentService.getCommentsOfRecords(recordIds);
+            Map<Long, List<CommentResponse>> commentMap = comments
+                    .stream()
+                    .collect(Collectors.groupingBy(CommentResponse::getRecordId));
+            List<RecordsWithCommentsResponse> recordResponse =
+                    records.stream()
+                            .map(r ->
+                                    RecordsWithCommentsResponse.of(r, commentMap.get(r.getId()))
+                            )
+                            .toList();
+
+            response.put("recordList", recordResponse);
+            response.put("currentPage", recordPage.getNumber());
+            response.put("totalPages", recordPage.getTotalPages());
+        }
+        return response;
+    }
 }

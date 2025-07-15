@@ -29,11 +29,11 @@ public class CommentService {
         return CommentResponse.from(savedComment);
     }
 
-    public List<CommentResponse> getCommentList(Long recordId) {
+    public List<CommentResponse> getCommentsOfRecord(Long recordId) {
         return commentRepository.findAllByRecordId(recordId);
     }
 
-    public List<CommentResponse> getComments(List<Long> recordIds) {
+    public List<CommentResponse> getCommentsOfRecords(List<Long> recordIds) {
         return commentRepository.findAllByRecordIdIn(recordIds);
     }
 

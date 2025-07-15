@@ -59,6 +59,16 @@ public class PageController {
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 
+    // 스터디 상세 페이지
+    @GetMapping("/api/page/studies/{studyId}/records")
+    public ResponseEntity<Map<String, Object>> getOnlyRecordsAndComments(@PathVariable Long studyId,
+                                                                         @RequestParam int page,
+                                                                         @RequestParam int size,
+                                                                @AuthenticationPrincipal User user) {
+        Map<String, Object> pageData = pageService.getOnlyRecordsAndComments(studyId, page - 1, size, user);
+        return ResponseEntity.status(HttpStatus.OK).body(pageData);
+    }
+
     // 스터디 기록 상세 내용
 //    @GetMapping("/api/studies/{studyId}/records/{recordId}/details")
 //    public ResponseEntity<Map<String, Object>> getRecordDetail(@PathVariable Long studyId,

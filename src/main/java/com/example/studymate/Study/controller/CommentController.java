@@ -36,7 +36,7 @@ public class CommentController {
     @GetMapping("/api/records/{recordId}/comments")
     public ResponseEntity<List<CommentResponse>> getCommentsList(@PathVariable Long recordId,
                                                                  @AuthenticationPrincipal User user) {
-        List<CommentResponse> commentList = commentService.getCommentList(recordId);
+        List<CommentResponse> commentList = commentService.getCommentsOfRecord(recordId);
         return ResponseEntity.ok().body(commentList);
     }
 
