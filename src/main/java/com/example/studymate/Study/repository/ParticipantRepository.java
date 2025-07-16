@@ -1,6 +1,7 @@
 package com.example.studymate.Study.repository;
 
 import com.example.studymate.Study.dto.MyStudyListDto;
+import com.example.studymate.Study.dto.ParticipantsDto;
 import com.example.studymate.Study.entity.StudyParticipant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,14 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
 
     // 스터디 참여 멤버 전부 확인
     List<StudyParticipant> findAllByStudyId(Long studyId);
+    @Query("""
+            SELECT new com.example.studymate.Study.dto.ParticipantsDto(
+                p.studyId, p.userId, p.role, p.createdAt, u.nickname
+            ) FROM StudyParticipant p
+            LEFT JOIN User u ON p.userId = u.id
+            WHERE p.studyId = :studyId
+            """)
+    List<ParticipantsDto> findAllByStudyIdWithNickname(@Param("studyId") Long studyId);
 
     Long countByStudyId(Long studyId);
 

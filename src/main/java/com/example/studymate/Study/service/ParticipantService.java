@@ -61,6 +61,12 @@ public class ParticipantService {
                 .stream()
                 .map(ParticipantResponse::from)
                 .toList();
+
+    }
+
+    public List<ParticipantsDto> getParticipantsWithNickname (Long studyId) {
+        return participantRepository.findAllByStudyIdWithNickname(studyId);
+
     }
 
     public boolean isParticipant(Long studyId, User user) {

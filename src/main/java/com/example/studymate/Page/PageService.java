@@ -71,11 +71,12 @@ public class PageService {
         int size = 5;
 
         StudyResponse study = groupService.getStudy(studyId);
-        List<ParticipantResponse> participants = participantService.getParticipants(studyId);
+        List<ParticipantsDto> participants = participantService.getParticipantsWithNickname(studyId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("isParticipant", isParticipant);
         response.put("participantNum", participants.size());
+        response.put("participantsList", participants);
         response.put("studyDetail", study);
 
         // 분기점
@@ -116,9 +117,6 @@ public class PageService {
 
     public Map<String, Object> getOnlyRecordsAndComments(Long studyId, int page, int size, User user) {
         boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
-
-        StudyResponse study = groupService.getStudy(studyId);
-        List<ParticipantResponse> participants = participantService.getParticipants(studyId);
 
         Map<String, Object> response = new HashMap<>();
 
