@@ -27,7 +27,7 @@ public class PageService {
     public Map<String, Object> getMain(User user) {
         String query = "";
         int page = 0;
-        int size = 4;
+        int size = 2;
 
         MyStudyPageResponse ongoingResponse = (user != null)
             ? participantService.getMyStudyOngoingList(page, size, user)

@@ -17,6 +17,8 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
     // 스터디 참여 멤버 전부 확인
     List<StudyParticipant> findAllByStudyId(Long studyId);
 
+    Long countByStudyId(Long studyId);
+
     // 유저가 스터디 멤버인지 확인
     boolean existsByStudyIdAndUserId(Long studyId, Long userId);
 

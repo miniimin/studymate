@@ -39,4 +39,6 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
                                                           @Param("keyword") String query,
                                                           Pageable pageable);
 
+    @Query("SELECT s.participantsMax FROM StudyGroup s WHERE s.id = :id")
+    Long findParticipantsMaxById(@Param("id") Long id);
 }
