@@ -110,11 +110,6 @@ public class PageService {
         return response;
     }
 
-    public RecordsWithCommentsResponse getRecordDetail(Long studyId, Long recordId, User user) {
-        List<CommentResponse> comments = commentService.getCommentsOfRecord(recordId);
-        return null;
-    }
-
     public Map<String, Object> getOnlyRecordsAndComments(Long studyId, int page, int size, User user) {
         boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
 
@@ -150,4 +145,19 @@ public class PageService {
         }
         return response;
     }
+
+    public Map<String, Object> getOneRecordAndComments(Long studyId, Long recordId, User user) {
+        boolean isParticipant = user != null && participantService.isParticipant(studyId, user);
+        if(!isParticipant) return null;
+
+        Map<String, Object> response = new HashMap<>();
+        RecordResponse record = recordService.getRecord(recordId);
+        List<CommentResponse> comments = commentService.getCommentsOfRecord(recordId);
+
+        RecordsWithCommentsResponse recordResponse = RecordsWithCommentsResponse.of(record, comments);
+
+        response.put("recordList", recordResponse);
+        return response;
+    }
+
 }

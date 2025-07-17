@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,17 +44,18 @@ public class RecordService {
         return recordRepository.findByStudyGroupId(studyId, pageable);
     }
 
-    public RecordResponse getRecord(Long recordId,
-                                    User user) {
+    public RecordResponse getRecord(Long recordId) {
         StudyRecord record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
 
         return RecordResponse.from(record);
     }
 
+    @Transactional
     public RecordResponse updateRecord(Long recordId,
                                        UpdateRecordRequest request,
                                        User user) {
+        System.out.println("리퀘스트" + request.getContent() + request.getTitle());
         StudyRecord record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
 

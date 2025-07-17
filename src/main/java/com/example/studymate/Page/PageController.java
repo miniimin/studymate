@@ -51,7 +51,7 @@ public class PageController {
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 
-    // 스터디 상세 페이지
+    // 스터디 피드 ( 스터디 설명 + 기록 + 덧글)
     @GetMapping("/api/page/studies/{studyId}")
     public ResponseEntity<Map<String, Object>> getStudyFeedPage(@PathVariable Long studyId,
                                                                 @AuthenticationPrincipal User user) {
@@ -59,7 +59,7 @@ public class PageController {
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 
-    // 스터디 상세 페이지
+    // 스터디 상세에서 페이지별 기록이랑 덧글
     @GetMapping("/api/page/studies/{studyId}/records")
     public ResponseEntity<Map<String, Object>> getOnlyRecordsAndComments(@PathVariable Long studyId,
                                                                          @RequestParam int page,
@@ -67,6 +67,15 @@ public class PageController {
                                                                 @AuthenticationPrincipal User user) {
         Map<String, Object> pageData = pageService.getOnlyRecordsAndComments(studyId, page - 1, size, user);
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
+    }
+
+    // 스터디 상세에서 하나의 기록이랑 덧글들
+    @GetMapping("/api/page/studies/{studyId}/records/{recordId}")
+    public ResponseEntity<Map<String,Object>> getOneRecordAndComments(@PathVariable Long studyId,
+                                                                      @PathVariable Long recordId,
+                                                                      @AuthenticationPrincipal User user) {
+        Map<String, Object> pageData = pageService.getOneRecordAndComments(studyId, recordId, user);
+        return ResponseEntity.ok().body(pageData);
     }
 
     // 스터디 기록 상세 내용

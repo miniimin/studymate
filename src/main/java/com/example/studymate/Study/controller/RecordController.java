@@ -49,7 +49,7 @@ public class RecordController {
     @GetMapping("/api/records/{recordId}")
     public ResponseEntity<RecordResponse> getRecord(@PathVariable Long recordId,
                                                     @AuthenticationPrincipal User user) {
-        RecordResponse record = recordService.getRecord(recordId, user);
+        RecordResponse record = recordService.getRecord(recordId);
         return ResponseEntity.ok().body(record);
     }
 
