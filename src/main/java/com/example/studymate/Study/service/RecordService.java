@@ -55,9 +55,12 @@ public class RecordService {
     public RecordResponse updateRecord(Long recordId,
                                        UpdateRecordRequest request,
                                        User user) {
-        System.out.println("리퀘스트" + request.getContent() + request.getTitle());
         StudyRecord record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
+
+        if (!record.getAuthorId().equals(user.getId())) {
+            throw new IllegalArgumentException("기록 수정 권한이 없습니다.");
+        }
 
         record.update(request);
         return RecordResponse.from(record);
@@ -67,6 +70,10 @@ public class RecordService {
                              User user) {
         StudyRecord record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 기록이 없습니다."));
+
+        if (!record.getAuthorId().equals(user.getId())) {
+            throw new IllegalArgumentException("기록 삭제 권한이 없습니다.");
+        }
 
         recordRepository.deleteById(recordId);
     }

@@ -21,6 +21,7 @@ public class StudyRecord {
     private Long authorId;
     private String authorName;
     private String title;
+    @Lob
     private String content;
     @CreatedDate
     private LocalDateTime createdAt;

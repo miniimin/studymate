@@ -70,6 +70,7 @@ public class PageController {
     }
 
     // 스터디 상세에서 하나의 기록이랑 덧글들
+    // 사용 안하는 상태
     @GetMapping("/api/page/studies/{studyId}/records/{recordId}")
     public ResponseEntity<Map<String,Object>> getOneRecordAndComments(@PathVariable Long studyId,
                                                                       @PathVariable Long recordId,

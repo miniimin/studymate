@@ -19,7 +19,7 @@ public interface ParticipantRepository extends JpaRepository<StudyParticipant, L
     List<StudyParticipant> findAllByStudyId(Long studyId);
     @Query("""
             SELECT new com.example.studymate.Study.dto.ParticipantsDto(
-                p.studyId, p.userId, p.role, p.createdAt, u.nickname
+                p.studyId, p.role, p.createdAt, u.nickname
             ) FROM StudyParticipant p
             LEFT JOIN User u ON p.userId = u.id
             WHERE p.studyId = :studyId

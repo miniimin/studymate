@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ParticipantsDto {
     private Long studyId;
-    private Long userId;
+    // private Long userId;
     private ParticipantRole role;
     private LocalDateTime joinDate;
     private String nickname;
