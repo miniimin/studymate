@@ -14,14 +14,27 @@ import java.util.List;
 
 @Repository
 public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
-
-    List<StudyGroup> findByRecruitDeadlineAfter(LocalDateTime now);
-
     @Query("""
                 SELECT s FROM StudyGroup s WHERE s.recruitDeadline > :now
                 AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
             """)
     List<StudyGroup> findRecruitingStudies(@Param("now") LocalDateTime now, @Param("keyword") String query);
+
+    @Query(""" 
+                SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
+                    s.id, s.title, s.description, s.startDate, s.endDate,
+                    s.participantsMax, COUNT(p.id), s.recruitDeadline, s.createdAt
+                )
+                FROM StudyGroup s
+                LEFT JOIN StudyParticipant p ON p.studyId = s.id
+                WHERE s.recruitDeadline >= :now
+                    AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
+                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline, s.createdAt
+                HAVING s.participantsMax > COUNT(p.id)
+            """)
+    Page<SearchStudyListDto> findRecruitingStudies(@Param("now") LocalDateTime now,
+                                                   @Param("keyword") String query,
+                                                   Pageable pageable);
 
     @Query("""
                 SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
@@ -30,14 +43,42 @@ public interface GroupRepository extends JpaRepository<StudyGroup, Long> {
                 )
                 FROM StudyGroup s
                 LEFT JOIN StudyParticipant p ON p.studyId = s.id
-                WHERE s.recruitDeadline > :now
+                WHERE s.endDate >= :now
                     AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
                 GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline, s.createdAt
-                HAVING s.participantsMax > COUNT(p.id)
+                HAVING (s.recruitDeadline < :now OR s.participantsMax <= COUNT(p.id))
             """)
-    Page<SearchStudyListDto> findRecruitingStudiesNotFull(@Param("now") LocalDateTime now,
-                                                          @Param("keyword") String query,
-                                                          Pageable pageable);
+    Page<SearchStudyListDto> findClosedStudies(@Param("now") LocalDateTime now,
+                                               @Param("keyword") String query,
+                                               Pageable pageable);
+
+    @Query("""
+                SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
+                    s.id, s.title, s.description, s.startDate, s.endDate,
+                    s.participantsMax, COUNT(p.id), s.recruitDeadline, s.createdAt
+                )
+                FROM StudyGroup s
+                LEFT JOIN StudyParticipant p ON p.studyId = s.id
+                WHERE s.endDate < :now
+                    AND (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
+                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline, s.createdAt
+            """)
+    Page<SearchStudyListDto> findCompletedStudies(@Param("now") LocalDateTime now,
+                                                  @Param("keyword") String query,
+                                                  Pageable pageable);
+
+    @Query("""
+                SELECT new com.example.studymate.Study.dto.SearchStudyListDto(
+                    s.id, s.title, s.description, s.startDate, s.endDate,
+                    s.participantsMax, COUNT(p.id), s.recruitDeadline, s.createdAt
+                )
+                FROM StudyGroup s
+                LEFT JOIN StudyParticipant p ON p.studyId = s.id
+                WHERE (s.title LIKE %:keyword% OR s.description LIKE %:keyword%)
+                GROUP BY s.id, s.title, s.description, s.startDate, s.endDate, s.participantsMax, s.recruitDeadline, s.createdAt
+            """)
+    Page<SearchStudyListDto> findAllStudies(@Param("keyword") String query,
+                                            Pageable pageable);
 
     @Query("SELECT s.participantsMax FROM StudyGroup s WHERE s.id = :id")
     Long findParticipantsMaxById(@Param("id") Long id);

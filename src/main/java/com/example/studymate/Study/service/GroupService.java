@@ -55,9 +55,18 @@ public class GroupService {
                 .toList();
     }
 
-    public SearchStudyPageResponse getRecruitingStudiesNotFull(String query, int page, int size) {
+    public SearchStudyPageResponse getStudyByStatus(String status, String query, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<SearchStudyListDto> dto = groupRepository.findRecruitingStudiesNotFull(LocalDateTime.now(), query.trim(), pageable);
+        Page<SearchStudyListDto> dto = switch (status) {
+            case "recruiting" ->
+                    groupRepository.findRecruitingStudies(LocalDateTime.now(), query.trim(), pageable);
+            case "closed" ->
+                    groupRepository.findClosedStudies(LocalDateTime.now(), query.trim(), pageable);
+            case "completed" ->
+                    groupRepository.findCompletedStudies(LocalDateTime.now(), query.trim(), pageable);
+            default ->
+                    groupRepository.findAllStudies(query.trim(), pageable);
+        };
         return new SearchStudyPageResponse(
                 dto.getContent(),
                 dto.getNumber(),

@@ -44,10 +44,11 @@ public class PageController {
 
     // 스터디 검색 페이지
     @GetMapping("/api/page/search-study")
-    public ResponseEntity<Map<String, Object>> getSearchStudyPage(@RequestParam(defaultValue = "") String query,
+    public ResponseEntity<Map<String, Object>> getSearchStudyPage(@RequestParam(defaultValue = "all") String status,
+                                                                  @RequestParam(defaultValue = "") String query,
                                                                   @RequestParam(defaultValue = "1") @Positive int page,
                                                                   @RequestParam(defaultValue = "4") @Positive int size) {
-        Map<String, Object> pageData = pageService.getSearchStudy(query, page - 1, size);
+        Map<String, Object> pageData = pageService.getSearchStudy(status, query.trim(), page - 1, size);
         return ResponseEntity.status(HttpStatus.OK).body(pageData);
     }
 

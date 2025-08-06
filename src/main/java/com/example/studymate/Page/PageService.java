@@ -25,6 +25,7 @@ public class PageService {
     private final CommentService commentService;
 
     public Map<String, Object> getMain(User user) {
+        String status = "all";
         String query = "";
         int page = 0;
         int size = 2;
@@ -33,7 +34,7 @@ public class PageService {
             ? participantService.getMyStudyOngoingList(page, size, user)
             : null;
 
-        SearchStudyPageResponse recruitingResponse = groupService.getRecruitingStudiesNotFull(query, page, size);
+        SearchStudyPageResponse recruitingResponse = groupService.getStudyByStatus(status, query, page, size);
 
         Map<String, Object> response = new HashMap<>();
         response.put("ongoingStudyList", ongoingResponse);
@@ -55,8 +56,8 @@ public class PageService {
         return response;
     }
 
-    public Map<String, Object> getSearchStudy(String query, int page, int size) {
-        SearchStudyPageResponse studyPageData = groupService.getRecruitingStudiesNotFull(query, page, size);
+    public Map<String, Object> getSearchStudy(String status, String query, int page, int size) {
+        SearchStudyPageResponse studyPageData = groupService.getStudyByStatus(status, query, page, size);
 
         Map<String, Object> response = new HashMap<>();
         response.put("searchStudyPageData", studyPageData);
