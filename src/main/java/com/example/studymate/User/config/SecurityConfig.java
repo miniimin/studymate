@@ -38,23 +38,16 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(apiConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
-                            "/",
                             "/api/csrf",
-                            "/api/page/**",
-                            "/api/page/search-study",
                             "/api/auth/**",
                             "/api/users",
-                            "/api/users/me",
-                            "/api/studies",
-                            "/api/studies/**"
+                            "/api/users/me"
                     ).permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/studies").authenticated()
                     .requestMatchers(
-                            "/api/studies/*/join",
-                            "/api/users/me/studies",
+                            "/api/page/**",
+                            "/api/studies/**",
                             "/api/users/me/studies/**",
-                            "/api/studies/{studyId}/records/",
-                            "/api/studies/{studyId}/records/**",
                             "/api/records/**",
                             "/api/comments/**"
                     ).authenticated()
