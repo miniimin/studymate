@@ -1,5 +1,6 @@
 package com.example.studymate.Study.service;
 
+import com.example.studymate.Study.constant.ParticipantRole;
 import com.example.studymate.Study.dto.*;
 import com.example.studymate.Study.entity.StudyGroup;
 import com.example.studymate.Study.repository.GroupRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +21,9 @@ import java.util.List;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final ParticipantService participantService;
 
+    @Transactional
     public StudyResponse addStudy(AddStudyRequest request, User user) {
         StudyGroup study = StudyGroup.builder()
                 .title(request.getTitle())
@@ -32,6 +36,7 @@ public class GroupService {
                 .participantsMax(request.getParticipantsMax())
                 .build();
         StudyGroup savedStudy = groupRepository.save(study);
+        participantService.joinStudy(savedStudy.getId(), user, ParticipantRole.LEADER);
         return StudyResponse.from(savedStudy);
     }
 
